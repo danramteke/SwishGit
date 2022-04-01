@@ -37,14 +37,12 @@ Swish is a tool for running command line tools from Swift programs. Find out mor
         name: "Scripts",
         platforms: [.macOS(.v12)],
         dependencies: [
-          .package(url: "https://github.com/danramteke/swish.git", from: "1.4.0"),
           .package(url: "https://github.com/danramteke/swish-git.git", from: "0.1.0"),
         ],
         targets: [
             .executableTarget(
                 name: "sample-script",
                 dependencies: [
-                    .product(name: "SwishKit", package: "Swish"),
                     .product(name: "SwishGit", package: "swish-git"),
                 ]),
         ]
