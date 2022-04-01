@@ -8,17 +8,7 @@ final class IsCleanTests: XCTestCase {
   
   lazy var testDir = "/tmp/test-git"
   lazy var testFile = "/tmp/test-git/greeting.txt"
-  
-  func testStatusOfNotGitRepo() throws {
-    XCTAssertThrowsError(try git.isClean(path: "/tmp"), "expected an error") { error in
-      if let e = error as? Git.Errors {
-        XCTAssertEqual(e, Git.Errors.notGitRepository)
-      } else {
-        XCTFail("unexpected error: \(error)")
-      }
-    }
-  }
-  
+   
   func testStatusOfEmptyGitRepo() throws {
     XCTAssertTrue(try git.isClean(path: testDir))
   }
@@ -33,6 +23,16 @@ final class IsCleanTests: XCTestCase {
     try sh(.terminal, "git add greeting.txt", workingDirectory: testDir)
     try sh(.terminal, "git commit -m \"greeting\"", workingDirectory: testDir)
     XCTAssertTrue(try git.isClean(path: testDir))
+  }
+  
+  func testThrowErrorWhenNotInGitRepo() throws {
+    XCTAssertThrowsError(try git.isClean(path: "/tmp"), "expected an error") { error in
+      if let e = error as? Git.Errors {
+        XCTAssertEqual(e, Git.Errors.notGitRepository)
+      } else {
+        XCTFail("unexpected error: \(error)")
+      }
+    }
   }
   
   override func setUpWithError() throws {
