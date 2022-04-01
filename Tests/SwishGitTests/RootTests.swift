@@ -4,24 +4,24 @@ import SwishKit
 
 final class RootTests: XCTestCase {
   
-  lazy var testDir = FileManager.default.temporaryDirectory.appendingPathComponent("swish/root-tests")
+  lazy var testDir = "/tmp/swish/root-tests"
   
   func testInGitRoot() {
-    let git = Git(workingDirectory: testDir.path)
+    let git = Git(workingDirectory: testDir)
     
 #if os(Linux)
     XCTAssertEqual(try git.root(), testDir.path)
 #else
-    XCTAssertEqual(try git.root(), "/private" + testDir.path)
+    XCTAssertEqual(try git.root(), "/private" + testDir)
 #endif
   }
   
   func testInSubfolders() {
-    let git = Git(workingDirectory: testDir.appendingPathComponent("some/some/folders").path)
+    let git = Git(workingDirectory: testDir + "/some/some/folders")
 #if os(Linux)
     XCTAssertEqual(try git.root(), testDir.path)
 #else
-    XCTAssertEqual(try git.root(), "/private" + testDir.path)
+    XCTAssertEqual(try git.root(), "/private" + testDir)
 #endif
   }
   
@@ -40,13 +40,13 @@ final class RootTests: XCTestCase {
   override func setUpWithError() throws {
     try super.setUpWithError()
     
-    try FileManager.default.createDirectory(at: testDir.appendingPathComponent("some/some/folders"), withIntermediateDirectories: true)
-    try sh(.terminal, "git init -b main", workingDirectory: testDir.absoluteString)
+    try FileManager.default.createDirectory(at: URL(fileURLWithPath: testDir + "/some/some/folders"), withIntermediateDirectories: true)
+    try sh(.terminal, "git init -b main", workingDirectory: testDir)
   }
   
   override func tearDownWithError() throws {
     try super.tearDownWithError()
     
-    try FileManager.default.removeItem(at: testDir)
+    try FileManager.default.removeItem(at: URL(fileURLWithPath: testDir))
   }
 }
