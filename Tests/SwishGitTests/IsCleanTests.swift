@@ -3,30 +3,35 @@ import SwishKit
 @testable import SwishGit
 
 final class IsCleanTests: XCTestCase {
-  
-  let git = Git()
-  
+    
   lazy var testDir = "/tmp/test-git"
   lazy var testFile = "/tmp/test-git/greeting.txt"
    
   func testStatusOfEmptyGitRepo() throws {
-    XCTAssertTrue(try git.isClean(path: testDir))
+    let git = Git(workingDirectory: testDir)
+    XCTAssertTrue(try git.isClean())
   }
   
   func testStatusOfDirtyGitRepo() throws {
+    let git = Git(workingDirectory: testDir)
     try "Hello world!".data(using: .utf8)?.write(to: URL(fileURLWithPath: testFile))
-    XCTAssertFalse(try git.isClean(path: testDir))
+    XCTAssertFalse(try git.isClean())
   }
   
   func testStatusOfCleanGitRepo() throws {
+    let git = Git(workingDirectory: testDir)
     try "Hello world!".data(using: .utf8)?.write(to: URL(fileURLWithPath: testFile))
+    
+    try sh(.terminal, #"git config user.email "you@example.com""#, workingDirectory: testDir)
+    try sh(.terminal, #"git config --global user.name "Your Name""#, workingDirectory: testDir)
     try sh(.terminal, "git add greeting.txt", workingDirectory: testDir)
     try sh(.terminal, "git commit -m \"greeting\"", workingDirectory: testDir)
-    XCTAssertTrue(try git.isClean(path: testDir))
+    XCTAssertTrue(try git.isClean())
   }
   
   func testThrowErrorWhenNotInGitRepo() throws {
-    XCTAssertThrowsError(try git.isClean(path: "/tmp"), "expected an error") { error in
+    let git = Git(workingDirectory: "/tmp")
+    XCTAssertThrowsError(try git.isClean(), "expected an error") { error in
       if let e = error as? Git.Errors {
         XCTAssertEqual(e, Git.Errors.notGitRepository)
       } else {

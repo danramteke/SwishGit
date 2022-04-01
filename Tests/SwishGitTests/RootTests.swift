@@ -4,28 +4,31 @@ import SwishKit
 
 final class RootTests: XCTestCase {
   
-  let git = Git()
-  
   lazy var testDir = FileManager.default.temporaryDirectory.appendingPathComponent("swish/root-tests")
   
   func testInGitRoot() {
+    let git = Git(workingDirectory: testDir.path)
+    
 #if os(Linux)
-    XCTAssertEqual(try git.root(path: testDir.path), testDir.path)
+    XCTAssertEqual(try git.root(), testDir.path)
 #else
-    XCTAssertEqual(try git.root(path: testDir.path), "/private" + testDir.path)
+    XCTAssertEqual(try git.root(), "/private" + testDir.path)
 #endif
   }
   
   func testInSubfolders() {
+    let git = Git(workingDirectory: testDir.appendingPathComponent("some/some/folders").path)
 #if os(Linux)
-    XCTAssertEqual(try git.root(path: testDir.appendingPathComponent("some/some/folders").path), testDir.path)
+    XCTAssertEqual(try git.root(), testDir.path)
 #else
-    XCTAssertEqual(try git.root(path: testDir.appendingPathComponent("some/some/folders").path), "/private" + testDir.path)
+    XCTAssertEqual(try git.root(), "/private" + testDir.path)
 #endif
   }
   
   func testThrowErrorWhenNotInGitRepo() {
-    XCTAssertThrowsError(try git.root(path: "/tmp"), "expected an error") { error in
+    let git = Git(workingDirectory: "/tmp")
+    
+    XCTAssertThrowsError(try git.root(), "expected an error") { error in
       if let e = error as? Git.Errors {
         XCTAssertEqual(e, Git.Errors.notGitRepository)
       } else {

@@ -3,14 +3,20 @@ import Foundation
 
 public final class Git {
 
-  public init() {}
+  public let workingDirectory: String?
+  
+  public init(workingDirectory: String? = nil) {
+    self.workingDirectory = workingDirectory
+  }
 
   /// Return `true` if the git repo is clean, `false` if not
   /// Throws a `notGitRepository` error if the path is not within a git repo
-  public func isClean(path: String? = nil) throws -> Bool {
+  ///
+  public func isClean() throws -> Bool {
+  
     let cmd = "git status --porcelain"
 
-    let allOutput = try Process(cmd: cmd, workingDirectory: path).runReturningAllOutput()
+    let allOutput = try Process(cmd: cmd, workingDirectory: workingDirectory).runReturningAllOutput()
     let stdOut = allOutput.stdOut?.asTrimmedString(encoding: .utf8)
     let stdErr = allOutput.stdErr?.asTrimmedString(encoding: .utf8)
 
@@ -27,10 +33,10 @@ public final class Git {
 
   /// Returns the path to the root of the Git repo
   /// Throws a `notGitRepository` error if the path is not within a git repo
-  public func root(path: String? = nil) throws -> String {
+  public func root() throws -> String {
     let cmd = "git rev-parse --show-toplevel"
 
-    let allOutput = try Process(cmd: cmd, workingDirectory: path).runReturningAllOutput()
+    let allOutput = try Process(cmd: cmd, workingDirectory: workingDirectory).runReturningAllOutput()
     let stdOut = allOutput.stdOut?.asTrimmedString(encoding: .utf8)
     let stdErr = allOutput.stdErr?.asTrimmedString(encoding: .utf8)
 
