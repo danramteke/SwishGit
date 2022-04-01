@@ -9,7 +9,6 @@ Swish is a tool for running command line tools from Swift programs. Find out mor
 
 ### Example usage
 
-    import SwishKit
     import SwishGit
     
     let git = Git()
