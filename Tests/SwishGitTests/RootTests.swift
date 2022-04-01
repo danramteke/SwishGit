@@ -10,7 +10,7 @@ final class RootTests: XCTestCase {
     let git = Git(workingDirectory: testDir)
     
 #if os(Linux)
-    XCTAssertEqual(try git.root(), testDir.path)
+    XCTAssertEqual(try git.root(), testDir)
 #else
     XCTAssertEqual(try git.root(), "/private" + testDir)
 #endif
@@ -19,7 +19,7 @@ final class RootTests: XCTestCase {
   func testInSubfolders() {
     let git = Git(workingDirectory: testDir + "/some/some/folders")
 #if os(Linux)
-    XCTAssertEqual(try git.root(), testDir.path)
+    XCTAssertEqual(try git.root(), testDir)
 #else
     XCTAssertEqual(try git.root(), "/private" + testDir)
 #endif
