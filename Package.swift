@@ -3,7 +3,7 @@
 import PackageDescription
 
 let package = Package(
-  name: "Swish Git Plugin",
+  name: "SwishGit",
   platforms: [
     .macOS(.v12),
   ],
@@ -11,15 +11,14 @@ let package = Package(
     .library(name: "SwishGit", targets: ["SwishGit"])
   ],
   dependencies: [
-    .package(url: "https://github.com/danramteke/Swish.git", from: "1.4.0"),
+    .package(url: "https://github.com/danramteke/Swish.git", from: "2.0.0"),
   ],
   targets: [
     .target(name: "SwishGit", dependencies: [
-      .product(name: "SwishKit", package: "Swish")
+      "Swish"
     ]),
     .testTarget(name: "SwishGitTests", dependencies: [
-      .target(name: "SwishGit"),
-      .product(name: "SwishKit", package: "Swish"),
+      "SwishGit", "Swish"
     ]),
   ]
 )

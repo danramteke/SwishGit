@@ -1,10 +1,10 @@
-import SwishKit
+import Swish
 import Foundation
 
 public final class Git {
 
   public let workingDirectory: String?
-  
+
   public init(workingDirectory: String? = nil) {
     self.workingDirectory = workingDirectory
   }
@@ -13,7 +13,7 @@ public final class Git {
   /// Throws a `notGitRepository` error if the path is not within a git repo
   ///
   public func isClean() throws -> Bool {
-  
+
     let cmd = "git status --porcelain"
 
     let allOutput = try Process(cmd: cmd, workingDirectory: workingDirectory).runReturningAllOutput()
